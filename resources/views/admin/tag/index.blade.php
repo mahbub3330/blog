@@ -24,6 +24,8 @@
                     <div class="header">
                         <h2>
                            ALL TAGS
+                            <span class="badge bg-blue">{{ $tags->count() }}</span>
+
                         </h2>
 
                     </div>
@@ -34,8 +36,11 @@
                                 <tr>
                                     <th>Id</th>
                                     <th>Name</th>
+                                    <th>Post Count</th>
+                                    <th>Post Count</th>
                                     <th>Created At</th>
                                     <th>Updated At</th>
+                                    <th>Action</th>
                                 </tr>
                                 </thead>
                                 <tfoot>
@@ -44,6 +49,7 @@
                                     <th>Name</th>
                                     <th>Created At</th>
                                     <th>Updated At</th>
+                                    <th>Action</th>
                                 </tr>
                                 </tfoot>
                                 <tbody>
@@ -52,8 +58,21 @@
                                     <tr>
                                         <td>{{ $key + 1 }}</td>
                                         <td>{{ $tag->name }}</td>
+                                        <td>{{ $tag->posts->count() }}</td>
                                         <td>{{ $tag->created_at }}</td>
                                         <td>{{ $tag->updated_at }}</td>
+                                        <td class="text-center">
+                                            <a href="{{ route('admin.tag.edit',$tag->id) }}" class="btn btn-info waves-effect">
+                                                <i class="material-icons">edit</i>
+                                            </a>
+                                            <button class="btn btn-danger waves-effect" type="btn"  onclick="deleteTag({{ $tag->id }})">
+                                                <i class="material-icons">delete</i>
+                                            </button>
+                                            <form id="delete-form-{{ $tag->id }}" action="{{ route('admin.tag.destroy',$tag->id) }}" method="POST" style="display: none;">
+                                                    @csrf
+                                                    @method('DELETE')
+                                            </form>
+                                        </td>
                                     @endforeach
                                     </tr>
                                 </tbody>
@@ -80,5 +99,42 @@
     <script src="{{ asset('assets/backend/plugins/jquery-datatable/extensions/export/buttons.print.min.js') }}"></script>
 
     <script src="{{ asset('assets/backend/js/pages/tables/jquery-datatable.js') }}"></script>
+{{--    sweetaler2--}}
+    <script src="https://unpkg.com/sweetalert2@9.17.1/dist/sweetalert2.all.min.js"></script>
+    <script type="text/javascript">
+            function deleteTag(id){
+                const swalWithBootstrapButtons = Swal.mixin({
+                    customClass: {
+                        confirmButton: 'btn btn-success',
+                        cancelButton: 'btn btn-danger'
+                    },
+                    buttonsStyling: false
+                })
 
+                swalWithBootstrapButtons.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, delete it!',
+                    cancelButtonText: 'No, cancel!',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.value) {
+                           event.preventDefault();
+                            document.getElementById('delete-form-'+id).submit();
+
+                    } else if (
+                        /* Read more about handling dismissals below */
+                        result.dismiss === Swal.DismissReason.cancel
+                    ) {
+                        swalWithBootstrapButtons.fire(
+                            'Cancelled',
+                            'Your imaginary file is safe :)',
+                            'error'
+                        )
+                    }
+                })
+            }
+    </script>
 @endpush

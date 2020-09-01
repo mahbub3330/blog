@@ -7,14 +7,24 @@
 
         <ul class="main-menu visible-on-click" id="main-menu">
             <li><a href="{{ route('home') }}">Home</a></li>
-            <li><a href="#">Categories</a></li>
-            <li><a href="#">Features</a></li>
+            <li><a href="{{ route('post.index') }}">POSTS</a></li>
+            @guest()
+                <li><a href="{{ route('login') }}">Login</a></li>
+
+            @else
+                @if(Auth::user()->role->id == 1)
+                    <li><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
+                @endif
+                @if(Auth::user()->role->id == 2)
+                    <li><a href="{{ route('author.dashboard') }}">Dashboard</a></li>
+                @endif
+                @endguest
         </ul><!-- main-menu -->
 
         <div class="src-area">
-            <form>
+            <form method="GET" action="{{ route('search') }}">
                 <button class="src-btn" type="submit"><i class="ion-ios-search-strong"></i></button>
-                <input class="src-input" type="text" placeholder="Type of search">
+                <input class="src-input" name="query" type="text" value="{{ isset($query) ? $query : ''}}" placeholder="Type of search">
             </form>
         </div>
 

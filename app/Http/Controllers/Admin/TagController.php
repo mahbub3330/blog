@@ -39,7 +39,7 @@ class TagController extends Controller
     public function store(Request $request)
     {
         $this->validate($request,[
-            'name'=> 'required'
+            'name'=> 'required|unique:tags'
         ]);
 
         $tag = new Tag();
@@ -72,7 +72,8 @@ class TagController extends Controller
      */
     public function edit($id)
     {
-        //
+        $tag = Tag::find($id);
+        return view('admin.tag.edit',compact('tag'));
     }
 
     /**
@@ -84,7 +85,14 @@ class TagController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $tag = Tag::find($id);
+
+        $tag->name = $request->name;
+        $tag->slug = str_slug($request->name);
+        $tag->save();
+
+        Toastr::success('Updated successfully','success');
+        return redirect()->route('admin.tag.index');
     }
 
     /**
@@ -95,6 +103,9 @@ class TagController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Tag::find($id)->delete();
+
+        Toastr::success('deleted successfully','success');
+        return redirect()->back();
     }
 }
