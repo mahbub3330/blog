@@ -11,3 +11,6 @@ This site is developed to learn and improve my laravel concept for myself. I add
 - Can search post By their interested categories.
 
 This is all basic features that make the site simple and user-friendly.
+
+- [Here](https://github.com/mahbub3330/blog/tree/master/blog_demo_pic). there is some pictures of my blog sites.
+
